@@ -1,5 +1,5 @@
-const clientId = '778500700d8a47258a7bdd2bd4d288a1';
-const redirectURI = "imperativethane-jamming.surge.sh"
+const clientId = '9c936a9ffce6462b9b1fb9453a8b34b4';
+const redirectURI = "http://imperativethane-jamming.surge.sh"
 let accessToken;
 
 export const Spotify = {
