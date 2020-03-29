@@ -10,7 +10,8 @@ export class App extends React.Component {
     super(props);
 
     this.state = {
-      searchResults: [] ,
+      searchResults: [],
+      recommendationResults: [],
       playlistName: 'Derek Playlist',
       playlistTracks: []
     };
@@ -22,6 +23,15 @@ export class App extends React.Component {
     this.search = this.search.bind(this);
   }
 
+  recommendations(track) {
+    Spotify.recommendations(track)
+    .then(recommendationResults => {
+      this.setState({
+        recommendationResults: recommendationResults
+      })
+    }) 
+  }
+  
   addTrack(track) {
     let tracks = this.state.playlistTracks;
     if (tracks.find(savedTrack => savedTrack.id === track.id)) {
@@ -32,6 +42,8 @@ export class App extends React.Component {
     this.setState({
       playlistTracks: tracks
     })
+
+    this.recommendations(track)
   }
 
   removeTrack(track) {
@@ -53,7 +65,7 @@ export class App extends React.Component {
   savePlaylist() {
     const trackUris = this.state.playlistTracks.map(track => track.uri);
     Spotify.savePlaylist(this.state.playlistName, trackUris)
-    .then(() => {
+     .then(() => {
       this.setState({
         playlistName: 'New Playlist',
         playlistTracks: []
@@ -77,7 +89,8 @@ export class App extends React.Component {
         <div className="App">
           <SearchBar onSearch={this.search} />
           <div className="App-playlist">
-            <SearchResults searchResults={this.state.searchResults} onAdd={this.addTrack} /> 
+            <SearchResults searchResults={this.state.searchResults} onAdd={this.addTrack} isRecommendation={false}/>
+            <SearchResults searchResults={this.state.recommendationResults} onAdd={this.addTrack} isRecommendation={true}/> 
             <Playlist playlistName={this.state.playlistName} 
                       playlistTracks={this.state.playlistTracks}
                       onRemove={this.removeTrack} 

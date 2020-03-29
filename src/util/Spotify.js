@@ -1,5 +1,5 @@
 const clientId = '9c936a9ffce6462b9b1fb9453a8b34b4';
-const redirectURI = "http://imperativethane-jamming.surge.sh"
+const redirectURI = "http://localhost:3001"
 let accessToken;
 
 export const Spotify = {
@@ -39,6 +39,29 @@ export const Spotify = {
                 return []
             } 
             return jsonResponse.tracks.items.map(track => ({
+                id: track.id,
+                name: track.name,
+                artist: track.artists[0].name,
+                album: track.album.name,
+                uri: track.uri
+            }));
+        }); 
+    },
+
+    recommendations(track) {
+        const accessToken = Spotify.getAccessToken();
+        const trackId = track.id;
+        return fetch(`https://api.spotify.com/v1/recommendations?seed_tracks=${trackId}&limit=10`, {
+            headers: {Authorization: `Bearer ${accessToken}`}
+        })
+        .then(response => {
+                return response.json();
+            }
+        ).then(jsonResponse => {
+            if (!jsonResponse.tracks) {
+                return []
+            } 
+            return jsonResponse.tracks.map(track => ({
                 id: track.id,
                 name: track.name,
                 artist: track.artists[0].name,
